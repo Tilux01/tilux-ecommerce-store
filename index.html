@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tilux Store</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', Helvetica, Arial, sans-serif; }
+        body { background-color: #f5f5f5; color: #000000; overflow-x: hidden; }
+        
+        /* Navbar */
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 20px 50px; 
+            background: transparent;
+            position: relative;
+            z-index: 10;
+        }
+        .logo { 
+            font-size: 28px; 
+            font-weight: 900; 
+            letter-spacing: -1px;
+        }
+        nav a { 
+            margin: 0 20px; 
+            text-decoration: none; 
+            color: #333333; 
+            font-weight: 600; 
+            font-size: 14px; 
+            transition: color 0.3s;
+        }
+        nav a:hover { color: #000; }
+        
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .search-container {
+            position: relative;
+        }
+        .search-bar { 
+            background: #e5e5e5; 
+            padding: 10px 15px 10px 40px; 
+            border-radius: 20px; 
+            border: none; 
+            outline: none; 
+            font-weight: 600;
+            width: 200px;
+            transition: background 0.3s;
+        }
+        .search-bar:hover, .search-bar:focus { background: #ddd; }
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            stroke: #777;
+        }
+        .cart-btn { 
+            background: #000; 
+            color: #fff; 
+            border: none; 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .cart-btn:hover { transform: scale(1.05); }
+
+        /* Hero */
+        .hero { 
+            position: relative; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            height: 65vh; 
+            padding: 0 80px; 
+            margin-top: 20px;
+        }
+        .hero-title { 
+            font-size: 80px; 
+            font-weight: 900; 
+            line-height: 0.95; 
+            letter-spacing: -2px;
+            flex: 1;
+            z-index: 2;
+        }
+        .watermark { 
+            position: absolute; 
+            font-size: 26vw; 
+            font-weight: 900; 
+            color: rgba(0,0,0,0.04); 
+            z-index: 0; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            top: -15%; 
+            letter-spacing: -10px;
+            user-select: none;
+            pointer-events: none;
+        }
+        .hero-product {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-product img { 
+            width: 100%;
+            max-width: 650px; 
+            transform: rotate(-15deg); 
+            filter: drop-shadow(0 40px 30px rgba(0,0,0,0.3));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(-15deg) translateY(0); }
+            50% { transform: rotate(-15deg) translateY(-20px); filter: drop-shadow(0 60px 40px rgba(0,0,0,0.2)); }
+        }
+
+        .product-info {
+            flex: 1;
+            text-align: right;
+            z-index: 2;
+        }
+        .product-info h2 { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; }
+        .product-info p { font-size: 16px; color: #777; font-weight: 600; margin-top: 5px; }
+        .price { font-size: 32px; font-weight: 900; margin-top: 15px; }
+
+        .slider-dots {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .dot.active {
+            background: #000;
+            transform: scale(1.3);
+        }
+
+        /* Bottom Cards */
+        .cards-container { 
+            display: flex; 
+            justify-content: center; 
+            gap: 30px; 
+            padding: 60px 80px 40px; 
+            position: relative;
+            z-index: 2;
+        }
+        .card { 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 16px; 
+            width: 260px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+        .card img { 
+            width: 100%; 
+            height: 140px; 
+            object-fit: contain; 
+            transform: rotate(-10deg);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .card:hover img {
+            transform: rotate(-5deg) scale(1.1);
+        }
+        .card-details h4 { font-size: 14px; font-weight: 900; }
+        .card-details span { font-size: 13px; color: #777; font-weight: 600; }
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 15px;
+        }
+        .card-bottom .price { font-size: 18px; margin: 0; }
+        
+        .add-btn {
+            width: 32px;
+            height: 32px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s, color 0.3s;
+        }
+        .card:hover .add-btn {
+            background: #000;
+            color: #fff;
+        }
+
+        .rating {
+            display: flex;
+            gap: 2px;
+            margin-top: 10px;
+        }
+        .star {
+            width: 12px;
+            height: 12px;
+            fill: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">TILUX</div>
+        <nav>
+            <a href="#">MEN</a>
+            <a href="#">WOMEN</a>
+            <a href="#">KIDS</a>
+            <a href="#">SALE</a>
+            <a href="#">SNKRS</a>
+        </nav>
+        <div class="nav-right">
+            <div class="search-container">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" class="search-bar" placeholder="Search">
+            </div>
+            <button class="cart-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="watermark">TILUX</div>
+        
+        <div class="hero-title">JUST<br>DO<br>IT.</div>
+        
+        <div class="hero-product">
+            <!-- Used an aesthetic shoe from unsplash that fits well without background -->
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" style="mix-blend-mode: multiply; border-radius: 40px;" alt="Tilux Air Max">
+            <div class="slider-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        
+        <div class="product-info">
+            <h2>TILUX AIR MAX</h2>
+            <p>PRE-DAY.</p>
+            <div class="price">$160</div>
+        </div>
+    </div>
+
+    <div class="cards-container">
+        <!-- Card 1 -->
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" style="mix-blend-mode: multiply;" alt="Tilux Huarache">
+            <div class="card-details">
+                <h4>TILUX AIR</h4>
+                <span>HUARACHE</span>
+                <div class="rating">
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" fill="#ddd"/></svg>
+                </div>
+                <div class="card-bottom">
+                    <div class="price">$180</div>
+                    <button class="add-btn">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1605348532760-6753d2c43329?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" style="mix-blend-mode: multiply;" alt="Tilux Air Max 270">
+            <div class="card-details">
+                <h4>TILUX AIR MAX</h4>
+                <span>270</span>
+                <div class="rating">
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                </div>
+                <div class="card-bottom">
+                    <div class="price">$190</div>
+                    <button class="add-btn">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" style="mix-blend-mode: multiply;" alt="Tilux Zoom">
+            <div class="card-details">
+                <h4>TILUX AIR ZOOM</h4>
+                <span>VOMERO</span>
+                <div class="rating">
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" fill="#ddd"/></svg>
+                </div>
+                <div class="card-bottom">
+                    <div class="price">$110</div>
+                    <button class="add-btn">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" style="mix-blend-mode: multiply;" alt="Tilux One Take">
+            <div class="card-details">
+                <h4>TILUX ONE TAKE</h4>
+                <span>BASKETBALL</span>
+                <div class="rating">
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                    <svg class="star"><polygon points="6,0 8,4 12,5 9,8 10,12 6,10 2,12 3,8 0,5 4,4" /></svg>
+                </div>
+                <div class="card-bottom">
+                    <div class="price">$180</div>
+                    <button class="add-btn">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cart functionality
+            const addBtns = document.querySelectorAll('.add-btn');
+            const cartBtn = document.querySelector('.cart-btn');
+            let cartCount = 0;
+
+            // Create a cart badge
+            const badge = document.createElement('div');
+            badge.style.position = 'absolute';
+            badge.style.top = '-5px';
+            badge.style.right = '-5px';
+            badge.style.background = '#FF3B30';
+            badge.style.color = '#fff';
+            badge.style.fontSize = '10px';
+            badge.style.fontWeight = 'bold';
+            badge.style.width = '16px';
+            badge.style.height = '16px';
+            badge.style.borderRadius = '50%';
+            badge.style.display = 'none';
+            badge.style.justifyContent = 'center';
+            badge.style.alignItems = 'center';
+            
+            cartBtn.style.position = 'relative';
+            cartBtn.appendChild(badge);
+
+            addBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    cartCount++;
+                    badge.textContent = cartCount;
+                    badge.style.display = 'flex';
+                    
+                    // Button animation
+                    const originalText = btn.textContent;
+                    btn.textContent = '✓';
+                    btn.style.background = '#000';
+                    btn.style.color = '#fff';
+                    
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                        btn.style.color = '';
+                    }, 1000);
+                });
+            });
+
+            // Slider functionality
+            const dots = document.querySelectorAll('.dot');
+            const heroImg = document.querySelector('.hero-product img');
+            
+            // 3 different shoe images for the slider
+            const shoeImages = [
+                'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+                'https://images.unsplash.com/photo-1552346154-21d32810baa3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+                'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80'
+            ];
+
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    // Update active dot
+                    dots.forEach(d => d.classList.remove('active'));
+                    dot.classList.add('active');
+                    
+                    // Fade out
+                    heroImg.style.opacity = '0';
+                    heroImg.style.transform = 'rotate(-15deg) scale(0.95)';
+                    heroImg.style.transition = 'opacity 0.3s, transform 0.3s';
+                    
+                    setTimeout(() => {
+                        // Change source and fade in
+                        heroImg.src = shoeImages[index];
+                        heroImg.style.opacity = '1';
+                        heroImg.style.transform = 'rotate(-15deg) scale(1)';
+                    }, 300);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
